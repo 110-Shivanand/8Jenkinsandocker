@@ -28,6 +28,20 @@ pipeline {
       }
     }
 
+    // quick credential test to ensure Jenkins can access the saved credential
+    stage('Cred test') {
+      steps {
+        withCredentials([usernamePassword(credentialsId: env.CRED_ID, usernameVariable: 'DOCKER_HUB_USER', passwordVariable: 'DOCKER_HUB_PASS')]) {
+          bat '''
+            echo ===== Credential test =====
+            echo Jenkins found Docker Hub user: %DOCKER_HUB_USER%
+            REM (password is secret - not printed)
+            echo ===========================
+          '''
+        }
+      }
+    }
+
     stage('Build image') {
       steps {
         bat '''
